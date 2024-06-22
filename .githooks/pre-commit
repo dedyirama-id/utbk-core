@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# Periksa apakah ini adalah commit pertama
+if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != "true" ]; then
+  echo "Error: Not inside a git repository."
+  exit 1
+fi
+
+if [ -z "$(git rev-parse --verify HEAD 2>/dev/null)" ]; then
+  echo "Info: First commit, skipping branch and staged files checks."
+  exit 0
+fi
+
+# Ambil nama branch saat ini
+branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+# Tentukan branch yang dilindungi
+protected_branches=("main" "develop")
+
+# Periksa apakah branch saat ini termasuk branch yang dilindungi
+for protected_branch in "${protected_branches[@]}"; do
+  if [[ "$branch_name" == "$protected_branch" ]]; then
+    echo "Direct commits to $branch_name branch are not allowed. Please create a new branch, then send a pull request."
+    exit 1
+  fi
+done
+
+# Dapatkan daftar file yang di-staged untuk commit
+staged_files=$(git diff --cached --name-only)
+
+# Inisialisasi flag untuk mendeteksi perubahan dari root folder
+changes_in_root=false
+
+# Periksa setiap file yang di-staged
+for file in $staged_files; do
+  # Dapatkan direktori dari file tersebut relatif terhadap root
+  file_dir=$(dirname "$file")
+
+  # Jika file berada di direktori root (tidak dalam subfolder), set flag menjadi true
+  if [[ "$file_dir" == "." ]]; then
+    changes_in_root=true
+    break
+  fi
+done
+
+# Jika ada perubahan di root, batalkan commit dan tampilkan pesan
+if $changes_in_root; then
+  echo "Error: You have staged changes directly from the root folder."
+  echo "Please commit changes from within subproject folders."
+  echo "To bypass this check (if really needed), use: git commit --no-verify"
+  echo "To cancel all staged files, use: git reset"
+  exit 1
+fi
+
+exit 0
