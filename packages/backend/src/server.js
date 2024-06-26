@@ -7,7 +7,6 @@ const Inert = require('@hapi/inert');
 const H2o2 = require('@hapi/h2o2');
 const Jwt = require('@hapi/jwt');
 const routes = require('./routes');
-// console.log(process.env.JWT_KEY);
 
 const init = async () => {
   const server = Hapi.server({
