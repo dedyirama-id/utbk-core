@@ -28,7 +28,7 @@ const routes = [
   },
   {
     method: 'POST',
-    path: '/refreshToken',
+    path: '/refresh-token',
     options: {
       auth: false,
       validate: {
