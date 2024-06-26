@@ -1,12 +1,14 @@
-const Joi = require("joi");
-const { getLandingPageHandler, postLoginHandler, getProfileHandler, postRefreshTokenHandler } = require("./handler");
+const Joi = require('joi');
+const {
+  getLandingPageHandler, postLoginHandler, getProfileHandler, postRefreshTokenHandler,
+} = require('./handler');
 
 const routes = [
   {
     method: 'GET',
     path: '/{param*}',
     options: {
-      auth: false
+      auth: false,
     },
     handler: getLandingPageHandler(),
   },
@@ -18,11 +20,11 @@ const routes = [
       validate: {
         payload: Joi.object({
           username: Joi.string().required(),
-          password: Joi.string().required()
-        })
-      }
+          password: Joi.string().required(),
+        }),
+      },
     },
-    handler: postLoginHandler
+    handler: postLoginHandler,
   },
   {
     method: 'POST',
@@ -31,20 +33,20 @@ const routes = [
       auth: false,
       validate: {
         payload: Joi.object({
-          refreshToken: Joi.string().required()
-        })
-      }
+          refreshToken: Joi.string().required(),
+        }),
+      },
     },
-    handler: postRefreshTokenHandler
+    handler: postRefreshTokenHandler,
   },
   {
     method: 'GET',
     path: '/profile',
     options: {
-      auth: 'jwt'
+      auth: 'jwt',
     },
-    handler: getProfileHandler
-  }
+    handler: getProfileHandler,
+  },
 ];
 
 module.exports = routes;

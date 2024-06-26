@@ -1,9 +1,9 @@
 const users = {
-  'admin': {
+  admin: {
     id: 'admin',
     username: 'admin',
-    password: '123'
-  }
-}
+    password: '123',
+  },
+};
 
 module.exports = users;
