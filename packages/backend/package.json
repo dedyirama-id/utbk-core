@@ -9,8 +9,8 @@
         "dev:all": "pnpm --prefix ../../ run dev",
         "start": "node src/server.js",
         "start:all": "pnpm --prefix ../../ run start",
-        "lint": "eslint .",
-        "clean": "eslint . --fix"
+        "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+        "clean": "eslint . --ext js,jsx --fix --report-unused-disable-directives --max-warnings 0"
     },
     "keywords": [],
     "author": "",
