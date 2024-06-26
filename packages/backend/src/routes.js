@@ -1,7 +1,9 @@
 const Joi = require('joi');
 const {
   getLandingPageHandler, postLoginHandler, getProfileHandler, postRefreshTokenHandler,
+  failActionHandler,
 } = require('./handler');
+const { loginSchema, refreshSchema } = require('./schema');
 
 const routes = [
   {
@@ -18,10 +20,7 @@ const routes = [
     options: {
       auth: false,
       validate: {
-        payload: Joi.object({
-          username: Joi.string().required(),
-          password: Joi.string().required(),
-        }),
+        payload: loginSchema, 
       },
     },
     handler: postLoginHandler,
@@ -32,9 +31,7 @@ const routes = [
     options: {
       auth: false,
       validate: {
-        payload: Joi.object({
-          refreshToken: Joi.string().required(),
-        }),
+        payload: refreshSchema,
       },
     },
     handler: postRefreshTokenHandler,

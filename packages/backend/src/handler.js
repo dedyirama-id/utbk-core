@@ -26,8 +26,8 @@ const getLandingPageHandler = () => {
 };
 
 const postLoginHandler = async (request, h) => {
-  const { username, password } = request.payload;
-  const user = users[username];
+  const { email, password } = request.payload;
+  const user = users[email];
 
   if (!user || user.password !== password) return h.response({ message: 'Invalid username or password' }).code(401);
 
@@ -48,17 +48,17 @@ const postLoginHandler = async (request, h) => {
     ttlSec: 60 * 60 * 24 * 30,
   });
 
-  refreshTokens[refreshToken] = user.username;
+  refreshTokens[refreshToken] = user.email;
   return { accessToken, refreshToken };
 };
 
 const postRefreshTokenHandler = async (request, h) => {
   const { refreshToken } = request.payload;
-  const username = refreshTokens[refreshToken];
+  const email = refreshTokens[refreshToken];
 
-  if (!username) return h.response({ message: 'Invalid refresh token' }).code(401);
+  if (!email) return h.response({ message: 'Invalid refresh token' }).code(401);
 
-  const user = users[username];
+  const user = users[email];
   const payload = {
     id: user.id,
     username: user.username,
@@ -88,5 +88,5 @@ module.exports = {
   getLandingPageHandler,
   postLoginHandler,
   postRefreshTokenHandler,
-  getProfileHandler,
+  getProfileHandler
 };

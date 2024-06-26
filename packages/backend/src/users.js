@@ -1,8 +1,9 @@
 const users = {
-  admin: {
-    id: 'admin',
+  'admin@utbk.com': {
+    id: '1',
     username: 'admin',
-    password: '123',
+    email: 'admin@utbk.com',
+    password: '123456',
   },
 };
 

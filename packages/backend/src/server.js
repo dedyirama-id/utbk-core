@@ -19,14 +19,14 @@ const init = async () => {
   await server.register(Jwt);
 
   server.auth.strategy('jwt', 'jwt', {
-    keys: process.env.ACCESS_TOKEN_KEY,
+    keys: process.env.ACCESS_TOKEN_SECRET_KEY,
     verify: {
       aud: false,
       iss: false,
       sub: false,
       nbf: true,
       exp: true,
-      maxAgeSec: 15, // 4 hours
+      maxAgeSec: 60 * 60,
       timeSkewSec: 15,
     },
     validate: (artifacts) => ({

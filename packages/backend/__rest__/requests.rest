@@ -2,17 +2,17 @@ POST http://localhost:9000/login
 Content-Type: application/json
 
 {
-  "username": "admin",
-  "password": "123"
+  "email": "admin@utbk.com",
+  "password": "123456"
 }
 
 ###
 
-POST http://localhost:9000/refreshToken
+POST http://localhost:9000/refresh-token
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcxOTM1OTI1OX0.pmK0ytWVy8p6kCGfBElzQWzCiWnfLx64Nk1PM3QnP0Q"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzE5Mzc0MTQxfQ.HnsdpljY6JqYtHzAEtcqCBx55rumQH-NGtKhegSRk64"
 }
 
 ###
