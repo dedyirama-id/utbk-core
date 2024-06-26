@@ -37,13 +37,13 @@ const postLoginHandler = async (request, h) => {
   };
 
   const accessToken = Jwt.token.generate(payload, {
-    key: process.env.ACCESS_TOKEN_KEY,
+    key: process.env.ACCESS_TOKEN_SECRET_KEY,
     algorithm: 'HS256',
     ttlSec: 15,
   });
 
   const refreshToken = Jwt.token.generate(payload, {
-    key: process.env.REFRESH_TOKEN_KEY,
+    key: process.env.REFRESH_TOKEN_SECRET_KEY,
     algorithm: 'HS256',
     ttlSec: 60 * 60 * 24 * 30,
   });
@@ -67,7 +67,7 @@ const postRefreshTokenHandler = async (request, h) => {
   const newAccessToken = Jwt.token.generate(
     payload,
     {
-      key: process.env.ACCESS_TOKEN_KEY,
+      key: process.env.ACCESS_TOKEN_SECRET_KEY,
       algorithm: 'HS256',
       ttlSec: 15,
     },
