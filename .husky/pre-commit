@@ -52,7 +52,4 @@ if $changes_in_root; then
   exit 1
 fi
 
-# Jalankan Prettier pada file yang di-staged
-npx git-format-staged -f 'prettier --ignore-unknown --stdin --stdin-filepath "{}"'
-
 exit 0

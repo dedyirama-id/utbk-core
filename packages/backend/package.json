@@ -10,7 +10,7 @@
         "start": "node src/server.js",
         "start:all": "pnpm --prefix ../../ run start",
         "lint": "eslint .",
-        "lint:fix": "eslint . --fix"
+        "clean": "eslint . --fix"
     },
     "keywords": [],
     "author": "",
