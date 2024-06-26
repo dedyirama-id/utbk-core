@@ -1,5 +1,5 @@
+const Joi = require("joi");
 const { getLandingPageHandler, postLoginHandler, getProfileHandler, postRefreshTokenHandler } = require("./handler");
-const Joi = require('@hapi/joi');
 
 const routes = [
   {
