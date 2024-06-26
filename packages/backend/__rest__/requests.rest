@@ -1,0 +1,21 @@
+POST http://localhost:9000/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "123"
+}
+
+###
+
+POST http://localhost:9000/refreshToken
+Content-Type: application/json
+
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcxOTM1OTI1OX0.pmK0ytWVy8p6kCGfBElzQWzCiWnfLx64Nk1PM3QnP0Q"
+}
+
+###
+
+GET http://localhost:9000/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcxOTM1OTEzOH0.rexTdMZOFAwwwMJ-EvKIX-h5j9_6zQsM5OtX3OABpYo
