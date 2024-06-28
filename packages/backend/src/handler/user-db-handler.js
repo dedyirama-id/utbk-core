@@ -16,7 +16,6 @@ const postRegisterHandler = async (request, h) => {
     email,
     password,
   }).catch((error) => {
-    if (error.code === 11000) return h.response({ success: false, message: 'Email already exists' }).code(409);
     if (error.name === 'ValidationError') return h.response({ success: false, message: error.message }).code(400);
     console.log(error);
     return h.response({ success: false, message: 'Something went wrong' }).code(500);

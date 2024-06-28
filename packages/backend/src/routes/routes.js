@@ -1,7 +1,7 @@
 const {
   postLoginHandler, getProfileHandler, postRefreshTokenHandler,
   postRegisterHandler, deleteAccountHandler,
-} = require('../handler/db-handler');
+} = require('../handler/user-db-handler');
 const { getLandingPageHandler } = require('../handler/static-handler');
 const { loginSchema, refreshSchema } = require('../schema/auth-schema');
 
