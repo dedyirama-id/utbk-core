@@ -1,7 +1,8 @@
 const {
-  getLandingPageHandler, postLoginHandler, getProfileHandler, postRefreshTokenHandler,
+  postLoginHandler, getProfileHandler, postRefreshTokenHandler,
   postRegisterHandler,
-} = require('../handler/handler');
+} = require('../handler/db-handler');
+const { getLandingPageHandler } = require('../handler/static-handler');
 const { loginSchema, refreshSchema } = require('../schema/auth-schema');
 
 const routes = [

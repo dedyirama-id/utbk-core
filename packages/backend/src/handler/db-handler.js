@@ -1,29 +1,6 @@
-const path = require('path');
 const Jwt = require('@hapi/jwt');
 const User = require('../model/user');
-// const { v4: uuidv4 } = require('uuid');
 const refreshTokens = require('../data/jwt-tokens');
-
-const getLandingPageHandler = () => {
-  if (process.env.NODE_ENV === 'development') {
-    return {
-      proxy: {
-        host: 'localhost',
-        port: 9001,
-        protocol: 'http',
-        passThrough: true,
-      },
-    };
-  }
-  return {
-    directory: {
-      path: path.join(__dirname, '../../frontend/landing-page/dist/'),
-      redirectToSlash: true,
-      index: true,
-      // listing: true
-    },
-  };
-};
 
 const postRegisterHandler = async (request, h) => {
   const { username, email, password } = request.payload;
@@ -75,6 +52,15 @@ const postLoginHandler = async (request, h) => {
   return { accessToken, refreshToken };
 };
 
+const deleteAccountHandler = async (request, h) => {
+  const { id, password } = request.payload;
+
+  const user = await User.findById(id);
+  if (!user || user.password !== password) return h.response({ message: 'Invalid username or password' }).code(401);
+  await User.findByIdAndDelete(id);
+  return { success: true, message: 'Goodbye! We will miss you' };
+};
+
 const postRefreshTokenHandler = async (request, h) => {
   const { refreshToken } = request.payload;
   const email = refreshTokens[refreshToken];
@@ -108,9 +94,9 @@ const getProfileHandler = (request, h) => {
 };
 
 module.exports = {
-  getLandingPageHandler,
   postRegisterHandler,
   postLoginHandler,
   postRefreshTokenHandler,
+  deleteAccountHandler,
   getProfileHandler,
 };
