@@ -1,9 +1,8 @@
-const Joi = require('joi');
 const {
   getLandingPageHandler, postLoginHandler, getProfileHandler, postRefreshTokenHandler,
-  failActionHandler,
-} = require('./handler');
-const { loginSchema, refreshSchema } = require('./schema');
+  postRegisterHandler,
+} = require('../handler/handler');
+const { loginSchema, refreshSchema } = require('../schema/auth-schema');
 
 const routes = [
   {
@@ -16,11 +15,19 @@ const routes = [
   },
   {
     method: 'POST',
+    path: '/register',
+    options: {
+      auth: false,
+    },
+    handler: postRegisterHandler,
+  },
+  {
+    method: 'POST',
     path: '/login',
     options: {
       auth: false,
       validate: {
-        payload: loginSchema, 
+        payload: loginSchema,
       },
     },
     handler: postLoginHandler,

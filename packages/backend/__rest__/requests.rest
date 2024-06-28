@@ -1,21 +1,34 @@
-POST http://localhost:9000/login
+@base_url=http://localhost:9000
+
+POST {{base_url}}/register
 Content-Type: application/json
 
 {
-  "email": "admin@utbk.com",
+  "username": "admin3",
+  "email": "admin3@utbk.com",
+  "password": "123456789"
+}
+
+###
+
+POST {{base_url}}/login
+Content-Type: application/json
+
+{
+  "email": "admin2@utbk.com",
   "password": "123456"
 }
 
 ###
 
-POST http://localhost:9000/refresh-token
+POST {{base_url}}/refresh-token
 Content-Type: application/json
 
 {
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNzE5Mzc0MTQxfQ.HnsdpljY6JqYtHzAEtcqCBx55rumQH-NGtKhegSRk64"
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2UxNDk5OGJkZjJjOWNlZWRjZjlmNyIsInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE5NTYxNTU2fQ.DLnnjtqGsb21_7qk7UUGQy-PnT9Kv7qybgd09Li6pqU"
 }
 
 ###
 
-GET http://localhost:9000/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImlhdCI6MTcxOTM1OTEzOH0.rexTdMZOFAwwwMJ-EvKIX-h5j9_6zQsM5OtX3OABpYo
+GET {{base_url}}/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2UxNDk5OGJkZjJjOWNlZWRjZjlmNyIsInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE5NTYxNTk2fQ.Ca7uWPMxFb5QZl3SGXUUVeD_gpDFJTYJ4wP6rYkXK-c

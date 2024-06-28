@@ -1,12 +1,15 @@
 const path = require('path');
-require('dotenv').config({
-  path: path.join(__dirname, '../../../.env'),
-});
+require('dotenv').config({ path: path.join(__dirname, '../../../.env') });
+
+if (process.env.NODE_ENV === undefined) process.env.NODE_ENV = 'development';
+
 const Hapi = require('@hapi/hapi');
 const Inert = require('@hapi/inert');
 const H2o2 = require('@hapi/h2o2');
 const Jwt = require('@hapi/jwt');
-const routes = require('./routes');
+const routes = require('./routes/routes');
+
+require('./db');
 
 const init = async () => {
   const server = Hapi.server({
@@ -42,9 +45,14 @@ const init = async () => {
   console.log(`Server running on ${server.info.uri} with "${process.env.NODE_ENV}" environment`);
 };
 
-process.on('unhandledRejection', (err) => {
-  console.log(err);
-  process.exit(1);
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Log the error and prevent the process from crashing
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception thrown:', err);
+  // Log the error and prevent the process from crashing
 });
 
 module.exports = init();
