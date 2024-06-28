@@ -53,10 +53,14 @@ const postLoginHandler = async (request, h) => {
 };
 
 const deleteAccountHandler = async (request, h) => {
-  const { id, password } = request.payload;
+  const { password } = request.payload;
+  const { id } = request.auth.credentials.user;
 
   const user = await User.findById(id);
-  if (!user || user.password !== password) return h.response({ message: 'Invalid username or password' }).code(401);
+  if (!user) return h.response({ success: false, message: 'You must login first!' }).code(404);
+  if (user.password !== password) return h.response({ success: false, message: 'Invalid password' }).code(401);
+
+  delete refreshTokens[user.refreshToken];
   await User.findByIdAndDelete(id);
   return { success: true, message: 'Goodbye! We will miss you' };
 };

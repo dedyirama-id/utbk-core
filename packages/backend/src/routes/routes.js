@@ -1,6 +1,6 @@
 const {
   postLoginHandler, getProfileHandler, postRefreshTokenHandler,
-  postRegisterHandler,
+  postRegisterHandler, deleteAccountHandler,
 } = require('../handler/db-handler');
 const { getLandingPageHandler } = require('../handler/static-handler');
 const { loginSchema, refreshSchema } = require('../schema/auth-schema');
@@ -51,6 +51,14 @@ const routes = [
       auth: 'jwt',
     },
     handler: getProfileHandler,
+  },
+  {
+    method: 'DELETE',
+    path: '/account',
+    options: {
+      auth: 'jwt',
+    },
+    handler: deleteAccountHandler,
   },
 ];
 
