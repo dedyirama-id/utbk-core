@@ -28,7 +28,7 @@ const postLoginHandler = async (request, h) => {
   const { email, password } = request.payload;
   const user = await User.findOne({ email });
 
-  if (!user || user.password !== password) return h.response({ message: 'Invalid username or password' }).code(401);
+  if (!user || !(await user.validatePassword(password))) return h.response({ message: 'Invalid username or password' }).code(401);
 
   const payload = {
     id: user.id,
