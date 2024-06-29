@@ -4,9 +4,9 @@ POST {{base_url}}/register
 Content-Type: application/json
 
 {
-  "username": "admin5-",
-  "email": "admin5.com",
-  "password": "adjhgjg1fdsGg13"
+  "username": "dedy",
+  "email": "dedy@gmail.com",
+  "password": "Abcd1234"
 }
 
 ###
@@ -15,8 +15,8 @@ POST {{base_url}}/login
 Content-Type: application/json
 
 {
-  "email": "admin4@utbk.com",
-  "password": "123456789"
+  "email": "dedy@gmail.com",
+  "password": "Abcd1234"
 }
 
 ###

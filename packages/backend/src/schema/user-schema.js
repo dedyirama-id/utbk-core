@@ -63,7 +63,7 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-userSchema.methods.validatePassword = async function (password) {
+userSchema.methods.validatePassword = async function bcryptCompare(password) {
   const status = await bcrypt.compare(password, this.password);
   return status;
 };
