@@ -26,15 +26,15 @@ POST {{base_url}}/refresh-token
 ###
 
 GET {{base_url}}/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2ZiOWI3ZjU0NmUxOTk2ZWViZmNlOSIsInVzZXJuYW1lIjoiZGVkeSIsImlhdCI6MTcxOTY1MjI5OH0.pSa3V2wUvars-_yZA1nVlpCtPKfUg-bLw5JhbY5-eR8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2ZiOWI3ZjU0NmUxOTk2ZWViZmNlOSIsInVzZXJuYW1lIjoiZGVkeSIsImlhdCI6MTcxOTY2MTcwOH0.qx-adReyNbyoVsmHXpNcyjJu9NDX7jlpKsgCENDhVVo
 
 ###
 
 DELETE {{base_url}}/account
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2UxNDk5OGJkZjJjOWNlZWRjZjlmNyIsInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE5NTYzMTcyfQ.LhVUvf6MgviXIBV8tfQHJMU1kox3pwpKBp3nWJtFtvs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2ZiOWI3ZjU0NmUxOTk2ZWViZmNlOSIsInVzZXJuYW1lIjoiZGVkeSIsImlhdCI6MTcxOTY2MTcwOH0.qx-adReyNbyoVsmHXpNcyjJu9NDX7jlpKsgCENDhVVo
 
 {
-  "password": "123456"
+  "password": "Abcd1234"
 }
 

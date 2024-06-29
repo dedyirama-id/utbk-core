@@ -41,7 +41,7 @@ const init = async () => {
   });
 
   server.state('refreshToken', {
-    ttl: 1000 * 60 * 60 * 24 * 30, // 30 hari
+    ttl: 1000 * 60 * 60 * 24 * 30, // 30 days
     isSecure: process.env.NODE_ENV === 'production',
     isHttpOnly: true,
     path: '/',

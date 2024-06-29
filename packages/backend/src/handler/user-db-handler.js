@@ -2,7 +2,9 @@ const Jwt = require('@hapi/jwt');
 const cookie = require('cookie');
 const User = require('../model/user');
 const formatMongooseError = require('../utils/format-mongoose-error');
-const verifyToken = require('../utils/verify-token');
+const {
+  generateAccessToken, generateRefreshToken, verifyToken, generateJwtPayloadObject,
+} = require('../utils/jwt-utils');
 
 const postRegisterHandler = async (request, h) => {
   const { username, email, password } = request.payload;
@@ -36,24 +38,11 @@ const postLoginHandler = async (request, h) => {
 
   if (!user || !(await user.validatePassword(password))) return h.response({ message: 'Invalid username or password' }).code(401);
 
-  const payload = {
-    id: user.id,
-    username: user.username,
-  };
+  const payload = generateJwtPayloadObject(user);
+  const accessToken = generateAccessToken(payload);
+  const refreshToken = generateRefreshToken(payload);
 
-  const accessToken = Jwt.token.generate(payload, {
-    key: process.env.ACCESS_TOKEN_SECRET_KEY,
-    algorithm: 'HS256',
-    ttlSec: 15,
-  });
-
-  const refreshToken = Jwt.token.generate(payload, {
-    key: process.env.REFRESH_TOKEN_SECRET_KEY,
-    algorithm: 'HS256',
-    ttlSec: 60 * 60 * 24 * 30,
-  });
-
-  return h.response({ accessToken }).header('Set-Cookie', cookie.serialize('refreshToken', refreshToken, {
+  return h.response({ accessToken, user }).header('Set-Cookie', cookie.serialize('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 30,
     secure: process.env.NODE_ENV === 'production',
@@ -67,7 +56,7 @@ const deleteAccountHandler = async (request, h) => {
 
   const user = await User.findById(id);
   if (!user) return h.response({ success: false, message: 'You must login first!' }).code(404);
-  if (user.password !== password) return h.response({ success: false, message: 'Invalid password' }).code(401);
+  if (await user.validatePassword(password) === false) return h.response({ success: false, message: 'Invalid password' }).code(401);
 
   await User.findByIdAndDelete(id);
   return { success: true, message: 'Goodbye! We will miss you' };
@@ -76,9 +65,7 @@ const deleteAccountHandler = async (request, h) => {
 const postRefreshTokenHandler = async (request, h) => {
   const { refreshToken } = request.state;
 
-  if (!refreshToken) {
-    return h.response({ message: 'No refresh token provided' }).code(401);
-  }
+  if (!refreshToken) return h.response({ message: 'No refresh token provided' }).code(401);
 
   try {
     const decodedToken = Jwt.token.decode(refreshToken);
@@ -91,27 +78,13 @@ const postRefreshTokenHandler = async (request, h) => {
     const user = await User.findById(payload.id);
     if (!user) return h.response({ message: 'User not found' }).code(404);
 
-    const newAccessToken = Jwt.token.generate(
-      { id: user.id, username: user.username },
-      {
-        key: process.env.ACCESS_TOKEN_SECRET_KEY,
-        algorithm: 'HS256',
-        ttlSec: 15 * 60, // 15 menit
-      },
-    );
-
-    const newRefreshToken = Jwt.token.generate(
-      { id: user.id, username: user.username },
-      {
-        key: process.env.REFRESH_TOKEN_SECRET_KEY,
-        algorithm: 'HS256',
-        ttlSec: 60 * 60 * 24 * 30, // 30 hari
-      },
-    );
+    const newPayload = generateJwtPayloadObject(user);
+    const newAccessToken = generateAccessToken(newPayload);
+    const newRefreshToken = generateRefreshToken(newPayload);
 
     return h.response({ accessToken: newAccessToken }).state('refreshToken', newRefreshToken, {
       httpOnly: true,
-      maxAge: 60 * 60 * 24 * 30, // 30 hari
+      maxAge: 60 * 60 * 24 * 30, // 30 days
       secure: process.env.NODE_ENV === 'production',
       path: '/',
     });
@@ -120,12 +93,10 @@ const postRefreshTokenHandler = async (request, h) => {
   }
 };
 
-const getProfileHandler = (request, h) => {
-  if (!request.auth || !request.auth.credentials || !request.auth.credentials.user) {
-    return h.response({ message: 'Unauthorized' }).code(401);
-  }
-
-  return { user: request.auth.credentials.user };
+const getProfileHandler = async (request, h) => {
+  if (!request.auth || !request.auth.credentials || !request.auth.credentials.user) return h.response({ message: 'Unauthorized' }).code(401);
+  const user = await User.findById(request.auth.credentials.user.id);
+  return user;
 };
 
 module.exports = {
