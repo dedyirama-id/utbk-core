@@ -47,12 +47,10 @@ const init = async () => {
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // Log the error and prevent the process from crashing
 });
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception thrown:', err);
-  // Log the error and prevent the process from crashing
 });
 
 module.exports = init();

@@ -11,5 +11,5 @@ async function connect() {
 try {
   connect();
 } catch (error) {
-  console.log(error, 'from log');
+  console.log(error);
 }

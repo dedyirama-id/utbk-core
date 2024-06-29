@@ -1,6 +1,7 @@
 const Jwt = require('@hapi/jwt');
 const User = require('../model/user');
 const refreshTokens = require('../data/jwt-tokens');
+const formatMongooseError = require('../utils/format-mongoose-error');
 
 const postRegisterHandler = async (request, h) => {
   const { username, email, password } = request.payload;
@@ -11,17 +12,21 @@ const postRegisterHandler = async (request, h) => {
   if (await User.findOne({ username })) errors.push({ path: 'username', message: 'Username already exists' });
   if (errors.length) return h.response({ success: false, errors }).code(409);
 
-  const newUser = await User.create({
-    username,
-    email,
-    password,
-  }).catch((error) => {
-    if (error.name === 'ValidationError') return h.response({ success: false, message: error.message }).code(400);
-    console.log(error);
-    return h.response({ success: false, message: 'Something went wrong' }).code(500);
-  });
+  try {
+    const newUser = await User.create({
+      username,
+      email,
+      password,
+    });
 
-  return { success: true, message: 'User created successfully', user: newUser };
+    return h.response({ success: true, message: 'User created successfully', user: newUser }).code(201);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      const formattedError = formatMongooseError(error);
+      return h.response({ success: false, errors: formattedError }).code(400);
+    }
+    return h.response({ success: false, message: 'Something went wrong' }).code(500);
+  }
 };
 
 const postLoginHandler = async (request, h) => {

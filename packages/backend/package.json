@@ -35,6 +35,7 @@
         "joi": "^17.13.3",
         "mongoose": "^8.4.4",
         "mongoose-beautiful-unique-validation": "^7.1.1",
-        "nanoid": "^5.0.7"
+        "nanoid": "^5.0.7",
+        "validator": "^13.12.0"
     }
 }

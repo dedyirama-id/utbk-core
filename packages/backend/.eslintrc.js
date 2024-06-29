@@ -25,6 +25,6 @@ module.exports = {
   rules: {
     'no-console': 'off',
     'import/no-extraneous-dependencies': 'off',
-    'max-len': ['error', { code: 120 }],
+    'max-len': 'off',
   },
 };
