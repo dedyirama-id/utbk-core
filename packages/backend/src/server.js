@@ -7,6 +7,7 @@ const Hapi = require('@hapi/hapi');
 const Inert = require('@hapi/inert');
 const H2o2 = require('@hapi/h2o2');
 const Jwt = require('@hapi/jwt');
+const Cookie = require('@hapi/cookie');
 const routes = require('./routes/routes');
 
 require('./db');
@@ -20,6 +21,7 @@ const init = async () => {
   await server.register(Inert);
   await server.register(H2o2);
   await server.register(Jwt);
+  await server.register(Cookie);
 
   server.auth.strategy('jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_SECRET_KEY,
@@ -36,6 +38,14 @@ const init = async () => {
       isValid: true,
       credentials: { user: artifacts.decoded.payload },
     }),
+  });
+
+  server.state('refreshToken', {
+    ttl: 1000 * 60 * 60 * 24 * 30, // 30 hari
+    isSecure: process.env.NODE_ENV === 'production',
+    isHttpOnly: true,
+    path: '/',
+    encoding: 'none',
   });
 
   server.auth.default('jwt');

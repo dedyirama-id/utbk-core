@@ -3,7 +3,7 @@ const {
   postRegisterHandler, deleteAccountHandler,
 } = require('../handler/user-db-handler');
 const { getLandingPageHandler } = require('../handler/static-handler');
-const { loginSchema, refreshSchema } = require('../schema/auth-schema');
+const { loginSchema } = require('../schema/auth-schema');
 
 const routes = [
   {
@@ -38,9 +38,6 @@ const routes = [
     path: '/refresh-token',
     options: {
       auth: false,
-      validate: {
-        payload: refreshSchema,
-      },
     },
     handler: postRefreshTokenHandler,
   },

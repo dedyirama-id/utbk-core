@@ -23,6 +23,9 @@ importers:
 
   packages/backend:
     dependencies:
+      '@hapi/cookie':
+        specifier: ^12.0.1
+        version: 12.0.1
       '@hapi/h2o2':
         specifier: ^10.0.4
         version: 10.0.4
@@ -38,6 +41,9 @@ importers:
       bcrypt:
         specifier: ^5.1.1
         version: 5.1.1(encoding@0.1.13)
+      cookie:
+        specifier: ^0.6.0
+        version: 0.6.0
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -505,6 +511,9 @@ packages:
 
   '@hapi/content@6.0.0':
     resolution: {integrity: sha512-CEhs7j+H0iQffKfe5Htdak5LBOz/Qc8TRh51cF+BFv0qnuph3Em4pjGVzJMkI2gfTDdlJKWJISGWS1rK34POGA==}
+
+  '@hapi/cookie@12.0.1':
+    resolution: {integrity: sha512-TpykARUIgTBvgbsgtYe5CrM/7XBGms2/22JD3N6dzct6bG1vcOC6pH1JWIos1O5zvQnyDSJ2pnaFk+DToHkAng==}
 
   '@hapi/cryptiles@6.0.1':
     resolution: {integrity: sha512-9GM9ECEHfR8lk5ASOKG4+4ZsEzFqLfhiryIJ2ISePVB92OHLp/yne4m+zn7z9dgvM98TLpiFebjDFQ0UHcqxXQ==}
@@ -1592,6 +1601,10 @@ packages:
 
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
+
+  cookie@0.6.0:
+    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
+    engines: {node: '>= 0.6'}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -4781,6 +4794,13 @@ snapshots:
     dependencies:
       '@hapi/boom': 10.0.1
 
+  '@hapi/cookie@12.0.1':
+    dependencies:
+      '@hapi/boom': 10.0.1
+      '@hapi/bounce': 3.0.1
+      '@hapi/hoek': 11.0.4
+      '@hapi/validate': 2.0.1
+
   '@hapi/cryptiles@6.0.1':
     dependencies:
       '@hapi/boom': 10.0.1
@@ -6228,6 +6248,8 @@ snapshots:
       meow: 8.1.2
 
   convert-source-map@2.0.0: {}
+
+  cookie@0.6.0: {}
 
   core-util-is@1.0.3: {}
 

@@ -1,7 +1,8 @@
 const Jwt = require('@hapi/jwt');
+const cookie = require('cookie');
 const User = require('../model/user');
-const refreshTokens = require('../data/jwt-tokens');
 const formatMongooseError = require('../utils/format-mongoose-error');
+const verifyToken = require('../utils/verify-token');
 
 const postRegisterHandler = async (request, h) => {
   const { username, email, password } = request.payload;
@@ -52,8 +53,12 @@ const postLoginHandler = async (request, h) => {
     ttlSec: 60 * 60 * 24 * 30,
   });
 
-  refreshTokens[refreshToken] = user.email;
-  return { accessToken, refreshToken };
+  return h.response({ accessToken }).header('Set-Cookie', cookie.serialize('refreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 60 * 60 * 24 * 30,
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+  }));
 };
 
 const deleteAccountHandler = async (request, h) => {
@@ -64,33 +69,55 @@ const deleteAccountHandler = async (request, h) => {
   if (!user) return h.response({ success: false, message: 'You must login first!' }).code(404);
   if (user.password !== password) return h.response({ success: false, message: 'Invalid password' }).code(401);
 
-  delete refreshTokens[user.refreshToken];
   await User.findByIdAndDelete(id);
   return { success: true, message: 'Goodbye! We will miss you' };
 };
 
 const postRefreshTokenHandler = async (request, h) => {
-  const { refreshToken } = request.payload;
-  const email = refreshTokens[refreshToken];
+  const { refreshToken } = request.state;
 
-  if (!email) return h.response({ message: 'Invalid refresh token' }).code(401);
+  if (!refreshToken) {
+    return h.response({ message: 'No refresh token provided' }).code(401);
+  }
 
-  const user = await User.findOne({ email });
-  const payload = {
-    id: user.id,
-    username: user.username,
-  };
+  try {
+    const decodedToken = Jwt.token.decode(refreshToken);
+    const verifyResponse = verifyToken(decodedToken, process.env.REFRESH_TOKEN_SECRET_KEY);
 
-  const newAccessToken = Jwt.token.generate(
-    payload,
-    {
-      key: process.env.ACCESS_TOKEN_SECRET_KEY,
-      algorithm: 'HS256',
-      ttlSec: 15,
-    },
-  );
+    const { payload } = decodedToken.decoded;
 
-  return { accessToken: newAccessToken };
+    if (!verifyResponse.isValid) return h.response({ error: verifyResponse.error }).code(401);
+
+    const user = await User.findById(payload.id);
+    if (!user) return h.response({ message: 'User not found' }).code(404);
+
+    const newAccessToken = Jwt.token.generate(
+      { id: user.id, username: user.username },
+      {
+        key: process.env.ACCESS_TOKEN_SECRET_KEY,
+        algorithm: 'HS256',
+        ttlSec: 15 * 60, // 15 menit
+      },
+    );
+
+    const newRefreshToken = Jwt.token.generate(
+      { id: user.id, username: user.username },
+      {
+        key: process.env.REFRESH_TOKEN_SECRET_KEY,
+        algorithm: 'HS256',
+        ttlSec: 60 * 60 * 24 * 30, // 30 hari
+      },
+    );
+
+    return h.response({ accessToken: newAccessToken }).state('refreshToken', newRefreshToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30, // 30 hari
+      secure: process.env.NODE_ENV === 'production',
+      path: '/',
+    });
+  } catch (error) {
+    return h.response({ message: 'Something went wrong' }).code(500);
+  }
 };
 
 const getProfileHandler = (request, h) => {

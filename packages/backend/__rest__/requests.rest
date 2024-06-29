@@ -22,16 +22,11 @@ Content-Type: application/json
 ###
 
 POST {{base_url}}/refresh-token
-Content-Type: application/json
-
-{
-  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2UxNDk5OGJkZjJjOWNlZWRjZjlmNyIsInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE5NTYxNTU2fQ.DLnnjtqGsb21_7qk7UUGQy-PnT9Kv7qybgd09Li6pqU"
-}
 
 ###
 
 GET {{base_url}}/profile
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2UxNDk5OGJkZjJjOWNlZWRjZjlmNyIsInVzZXJuYW1lIjoiYWRtaW4yIiwiaWF0IjoxNzE5NTYxNTk2fQ.Ca7uWPMxFb5QZl3SGXUUVeD_gpDFJTYJ4wP6rYkXK-c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2ZiOWI3ZjU0NmUxOTk2ZWViZmNlOSIsInVzZXJuYW1lIjoiZGVkeSIsImlhdCI6MTcxOTY1MjI5OH0.pSa3V2wUvars-_yZA1nVlpCtPKfUg-bLw5JhbY5-eR8
 
 ###
 
