@@ -20,7 +20,7 @@ protected_branches=("main" "develop")
 # Periksa apakah branch saat ini termasuk branch yang dilindungi
 for protected_branch in "${protected_branches[@]}"; do
   if [[ "$branch_name" == "$protected_branch" ]]; then
-    echo "Direct commits to $branch_name branch are not allowed. Please create a new branch, then send a pull request."
+    echo -e "\e[31mDirect commits to $branch_name branch are not allowed. Please create a new branch, then send a pull request.\e[0m"
     exit 1
   fi
 done
@@ -45,11 +45,14 @@ done
 
 # Jika ada perubahan di root, batalkan commit dan tampilkan pesan
 if $changes_in_root; then
-  echo "Error: You have staged changes directly from the root folder."
-  echo "Please commit changes from within subproject folders."
-  echo "To bypass this check (if really needed), use: git commit --no-verify"
-  echo "To cancel all staged files, use: git reset"
+  echo -e "\e[31mError: You have staged changes directly from the root folder.\e[0m"
+  echo -e "\e[33mPlease commit changes from within subproject folders.\e[0m"
+  echo -e "\e[33m- To bypass this check (if really needed), use: git commit --no-verify\e[0m"
+  echo -e "\e[33m- To cancel all staged files, use: git reset\e[0m"
   exit 1
 fi
+
+# Jalankan Prettier pada file yang di-staged
+npx git-format-staged -f 'prettier --ignore-unknown --stdin --stdin-filepath "{}"'
 
 exit 0
