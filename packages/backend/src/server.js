@@ -8,7 +8,8 @@ const Inert = require('@hapi/inert');
 const H2o2 = require('@hapi/h2o2');
 const Jwt = require('@hapi/jwt');
 const Cookie = require('@hapi/cookie');
-const routes = require('./routes/routes');
+const appRoutes = require('./routes/app.routes');
+const apiRoutes = require('./routes/api.routes');
 
 require('./db');
 
@@ -49,7 +50,7 @@ const init = async () => {
   });
 
   server.auth.default('jwt');
-  server.route(routes);
+  server.route([...appRoutes, ...apiRoutes]);
 
   await server.start();
   console.log(`Server running on ${server.info.uri} with "${process.env.NODE_ENV}" environment`);

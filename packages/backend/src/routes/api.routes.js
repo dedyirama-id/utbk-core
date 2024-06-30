@@ -2,21 +2,12 @@ const {
   postLoginHandler, getProfileHandler, postRefreshTokenHandler,
   postRegisterHandler, deleteAccountHandler,
 } = require('../handler/user-db-handler');
-const { getLandingPageHandler } = require('../handler/static-handler');
 const { loginSchema } = require('../schema/auth-schema');
 
-const routes = [
-  {
-    method: 'GET',
-    path: '/{param*}',
-    options: {
-      auth: false,
-    },
-    handler: getLandingPageHandler(),
-  },
+const apiRoutes = [
   {
     method: 'POST',
-    path: '/register',
+    path: '/api/register',
     options: {
       auth: false,
     },
@@ -24,7 +15,7 @@ const routes = [
   },
   {
     method: 'POST',
-    path: '/login',
+    path: '/api/login',
     options: {
       auth: false,
       validate: {
@@ -35,7 +26,7 @@ const routes = [
   },
   {
     method: 'POST',
-    path: '/refresh-token',
+    path: '/api/refresh-token',
     options: {
       auth: false,
     },
@@ -43,7 +34,7 @@ const routes = [
   },
   {
     method: 'GET',
-    path: '/profile',
+    path: '/api/profile',
     options: {
       auth: 'jwt',
     },
@@ -51,7 +42,7 @@ const routes = [
   },
   {
     method: 'DELETE',
-    path: '/account',
+    path: '/api/account',
     options: {
       auth: 'jwt',
     },
@@ -59,4 +50,4 @@ const routes = [
   },
 ];
 
-module.exports = routes;
+module.exports = apiRoutes;
