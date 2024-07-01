@@ -22,7 +22,9 @@ const postRegisterHandler = async (request, h) => {
       password,
     });
 
-    return h.response({ success: true, message: 'User created successfully', user: newUser }).code(201);
+    const userToResponse = newUser.toObject();
+    delete userToResponse.password;
+    return h.response({ success: true, message: 'User created successfully', user: userToResponse }).code(201);
   } catch (error) {
     if (error.name === 'ValidationError') {
       const formattedError = formatMongooseError(error);
@@ -41,8 +43,11 @@ const postLoginHandler = async (request, h) => {
   const payload = generateJwtPayloadObject(user);
   const accessToken = generateAccessToken(payload);
   const refreshToken = generateRefreshToken(payload);
+  const userToResponse = user.toObject();
 
-  return h.response({ accessToken, user }).header('Set-Cookie', cookie.serialize('refreshToken', refreshToken, {
+  delete userToResponse.password;
+
+  return h.response({ accessToken, user: userToResponse }).header('Set-Cookie', cookie.serialize('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: 60 * 60 * 24 * 30,
     secure: process.env.NODE_ENV === 'production',
@@ -96,7 +101,10 @@ const postRefreshTokenHandler = async (request, h) => {
 const getProfileHandler = async (request, h) => {
   if (!request.auth || !request.auth.credentials || !request.auth.credentials.user) return h.response({ message: 'Unauthorized' }).code(401);
   const user = await User.findById(request.auth.credentials.user.id);
-  return user;
+  const userToResponse = user.toObject();
+
+  delete userToResponse.password;
+  return userToResponse;
 };
 
 module.exports = {
