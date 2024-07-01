@@ -5,7 +5,8 @@ require('dotenv').config({
 });
 
 async function connect() {
-  await mongoose.connect(process.env.DATABASE_URL);
+  if (process.env.NODE_ENV === 'production') await mongoose.connect(process.env.DATABASE_URI);
+  else await mongoose.connect(process.env.TEST_DATABASE_URI);
 }
 
 try {
