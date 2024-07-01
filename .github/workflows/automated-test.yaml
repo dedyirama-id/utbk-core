@@ -29,14 +29,18 @@ jobs:
       with:
         node-version: '20'
 
-    - name: Install pnpm
-      run: npm install -g pnpm
-
     - name: Install dependencies
-      run: pnpm install
+      run: |
+        pnpm install
+        pnpm install -g wait-on
 
     - name: Run server
       run: pnpm start &
+      env:
+        NODE_ENV: test
+
+    - name: Wait for server to be ready
+      run: wait-on http://localhost:9000
 
     - name: Run tests
       env:
