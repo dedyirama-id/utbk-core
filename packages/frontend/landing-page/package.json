@@ -8,6 +8,7 @@
     "dev:all": "pnpm --prefix ../../../ run dev",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "clean": "eslint . --ext js,jsx --fix --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "start": "pnpm --prefix ../../../ run start",
     "test": "jest"

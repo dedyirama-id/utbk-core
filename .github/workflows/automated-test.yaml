@@ -11,23 +11,40 @@ on:
       - develop
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20'
-        
-      - name: Install pnpm
-        run: npm install -g pnpm
-        
-      - name: Install dependencies
-        run: pnpm install
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
 
-      - name: Run tests
-        run: pnpm test
+    - name: Set up pnpm
+      uses: pnpm/action-setup@v2
+      with:
+        version: latest
+
+    - name: Install dependencies
+      run: |
+        pnpm install
+        pnpm install -g wait-on
+
+    - name: Run server
+      env:
+        DATABASE_URI: mongodb://localhost:27017/utbk-core
+        ACCESS_TOKEN_SECRET_KEY: e2397ea439054fe28e79389f75ac9d71bc6eb47796b3d50c2f4a254b9cc71b5776b807417f9a2d9c280b30950655b1386acf92fe351792e7f759be38411c4bf4
+        REFRESH_TOKEN_SECRET_KEY: a15bcc7ea8d9a71dbbff2d732f3de3119b70f5c313c45e3be6332ac112ba113a8de83bd84f276b86369aaa75f6362e3b68d62f06d47796ab47f85dca8a101c25 
+      run: pnpm start &
+
+    - name: Run tests
+      run: pnpm test

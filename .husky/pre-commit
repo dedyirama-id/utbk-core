@@ -25,34 +25,4 @@ for protected_branch in "${protected_branches[@]}"; do
   fi
 done
 
-# Dapatkan daftar file yang di-staged untuk commit
-staged_files=$(git diff --cached --name-only)
-
-# Inisialisasi flag untuk mendeteksi perubahan dari root folder
-changes_in_root=false
-
-# Periksa setiap file yang di-staged
-for file in $staged_files; do
-  # Dapatkan direktori dari file tersebut relatif terhadap root
-  file_dir=$(dirname "$file")
-
-  # Jika file berada di direktori root (tidak dalam subfolder), set flag menjadi true
-  if [[ "$file_dir" == "." ]]; then
-    changes_in_root=true
-    break
-  fi
-done
-
-# Jika ada perubahan di root, batalkan commit dan tampilkan pesan
-if $changes_in_root; then
-  echo -e "\e[31mError: You have staged changes directly from the root folder.\e[0m"
-  echo -e "\e[33mPlease commit changes from within subproject folders.\e[0m"
-  echo -e "\e[33m- To bypass this check (if really needed), use: git commit --no-verify\e[0m"
-  echo -e "\e[33m- To cancel all staged files, use: git reset\e[0m"
-  exit 1
-fi
-
-# Jalankan Prettier pada file yang di-staged
-npx git-format-staged -f 'prettier --ignore-unknown --stdin --stdin-filepath "{}"'
-
 exit 0
