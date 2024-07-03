@@ -1,0 +1,673 @@
+{
+	"info": {
+		"_postman_id": "04f04dd7-a357-437d-af6f-f636f472730d",
+		"name": "Integration Testing",
+		"description": "# About this collection\n\nPostman allows you to test your APIs using simple Javascript code. You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis collection guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## **Using this collection**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\".\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" width=\"266\" height=\"103\">\n\n**Step 3:** To customize this collection, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "31961267"
+	},
+	"item": [
+		{
+			"name": "Register Account With Valid Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Status code should 201', () => {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"",
+							"pm.test('Response should contains success object', () => {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('success', true);",
+							"    pm.expect(jsonData).to.have.property('message', 'User created successfully');",
+							"});",
+							"",
+							"pm.test('Response should have user object', () => {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('user');",
+							"    pm.expect(jsonData.user).to.have.property('username');",
+							"    pm.expect(jsonData.user).to.have.property('email');",
+							"});",
+							"",
+							"pm.test('Response shouldn\\'t contains user password', () => {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('user');",
+							"    pm.expect(jsonData.user).to.not.have.property('password');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				},
+				"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+			},
+			"response": []
+		},
+		{
+			"name": "Register Accont With Conflicted Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status 409', () => {",
+							"    pm.response.to.have.status(409);",
+							"});",
+							"",
+							"pm.test('Should respond success is false', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.include({ success: false });",
+							"});",
+							"",
+							"pm.test('Should respond with email conflict', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors).to.be.an('array');",
+							"    pm.expect(jsonData.errors).to.deep.include({ path: 'email', message: 'Email already exists' });",
+							"});",
+							"",
+							"pm.test('Should respond with username conflict', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors).to.be.an('array');",
+							"    pm.expect(jsonData.errors).to.deep.include({ path: 'username', message: 'Username already exists' });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				},
+				"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+			},
+			"response": []
+		},
+		{
+			"name": "Register Accont With Invalid Username",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status 400', () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test('Should respond success is false', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.include({ success: false });",
+							"});",
+							"",
+							"pm.test('Should respond with invalid username', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors).to.be.an('array');",
+							"    pm.expect(jsonData.errors).to.deep.include({ path: 'username', message: 'Username must only contain letters, numbers, underscore (_) or dash (-).' });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"user test\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				},
+				"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+			},
+			"response": []
+		},
+		{
+			"name": "Register Accont With Invalid email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status 400', () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test('Should respond success is false', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.include({ success: false });",
+							"});",
+							"",
+							"pm.test('Should respond with invalid email', () => {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.errors).to.be.an('array');",
+							"    pm.expect(jsonData.errors).to.deep.include({ path: 'email', message: 'Invalid email format' });",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"{{$randomUserName}}\",\r\n    \"email\": \"{{$randomLoremText}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/register",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"register"
+					]
+				},
+				"description": "This returns a `token` that you can use to retrieve information later on.\n\nWe have included a test to confirm if a token is returned. We have also added test scripts to copy the token to the `token` collection variable. This makes it easy for us to reuse this token in other requests in the collection."
+			},
+			"response": []
+		},
+		{
+			"name": "Login With Valid Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status code 200', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Should have valid body', () => {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('accessToken');",
+							"    pm.environment.set('accessToken', jsonData.accessToken);",
+							"    pm.expect(jsonData).to.have.property('user');",
+							"    pm.expect(jsonData.user).to.have.property('email', pm.environment.get('email'));",
+							"    pm.expect(jsonData.user).to.not.have.property('password');",
+							"",
+							"})",
+							"",
+							"pm.test('Should has Set-Cookie header', () => {",
+							"    const cookie = pm.response.headers.get('Set-Cookie');",
+							"    pm.expect(cookie).to.include('refreshToken');",
+							"});",
+							"",
+							"pm.test(\"Should respond with valid jwt token\", () => {",
+							"    const jsonData = pm.response.json();",
+							"    const tokenParts = jsonData.accessToken.split('.');",
+							"    pm.expect(tokenParts.length).to.eql(3);",
+							"    pm.expect(tokenParts[0]).to.be.a('string');",
+							"    pm.expect(tokenParts[1]).to.be.a('string');",
+							"    pm.expect(tokenParts[2]).to.be.a('string');",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Login With Invalid Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status code 401', () => {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test('Should only response with error message', () => {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData).to.have.property('message');",
+							"    pm.expect(jsonData).to.not.have.property('accessToken');",
+							"    pm.expect(jsonData).to.not.have.property('user');",
+							"})",
+							"",
+							"pm.test('Should not have Set-Cookie header', () => {",
+							"    pm.expect(pm.response.headers.get('Set-Cookie')).to.equal(undefined);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"password\": \"123456789\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				},
+				"description": "This request uses the saved `token` collection variable to access a secret 'name' stored against that token.\n\nIn this request, we used the `token` collection variable as a query param to fetch the name generated for that token. We have added a test to check that a name is correctly returned."
+			},
+			"response": []
+		},
+		{
+			"name": "Access Profile With Valid Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status code 200', () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test('Response should contains user details', () => {",
+							"    const jsonData = pm.response.json();",
+							"    if (pm.response.code === 200) {",
+							"        pm.expect(jsonData).to.have.property('_id');",
+							"        pm.expect(jsonData).to.have.property('email');",
+							"        pm.expect(jsonData).to.have.property('username');",
+							"        pm.expect(jsonData).to.not.have.property('password');",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/profile",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Access Profile With Invalid Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status code 401', () => {",
+							"    pm.response.to.have.status(401);",
+							"});",
+							"",
+							"pm.test('Response should not contains user details', () => {",
+							"    const jsonData = pm.response.json();",
+							"        pm.expect(jsonData).to.not.have.property('_id');",
+							"        pm.expect(jsonData).to.not.have.property('email');",
+							"        pm.expect(jsonData).to.not.have.property('username');",
+							"        pm.expect(jsonData).to.not.have.property('password');",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "fsfa",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/profile",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"profile"
+					]
+				},
+				"description": "This request un-registers a token by using the token collection variable in the POST body.\n\nWe also added a test to ensure the response has a 200 OK status code."
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token With Valid Cookie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status code 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test('Should respond with new accessToken', () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('accessToken');\r",
+							"    pm.expect(jsonData.accessToken).is.not.equal(pm.variables.accessToken);\r",
+							"    pm.collectionVariables.set('accessToken', jsonData.accessToken);\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/refresh-token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token Without Valid Cookie",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with status code 401', () => {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"pm.test('Should not respond new accessToken', () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.not.have.property('accessToken');\r",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableCookies": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/refresh-token",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User With Invalid Password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with Status code 401', () => {\r",
+							"    pm.response.to.have.status(401);\r",
+							"})\r",
+							"\r",
+							"pm.test('Should respond with success false', () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('success', false);\r",
+							"    pm.expect(jsonData).to.have.property('message', 'Invalid password');\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"{{$randomPassword}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/account",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User With Valid Password",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test('Should respond with Status code 200', () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test('Should respond with success true', () => {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('success', true);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"{{password}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/account",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"account"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

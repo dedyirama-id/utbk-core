@@ -1,0 +1,39 @@
+{
+	"id": "79810c46-7c64-4594-9b15-842637b0413e",
+	"name": "Test Environment",
+	"values": [
+		{
+			"key": "username",
+			"value": "test-user",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "email",
+			"value": "test@test.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "password",
+			"value": "Abcd1234",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:9000",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2024-06-30T03:55:27.668Z",
+	"_postman_exported_using": "Postman/11.2.26"
+}

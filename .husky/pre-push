@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Ambil referensi yang di-push dari stdin
+while read local_ref local_sha remote_ref remote_sha; do
+  branch_name=$(echo $remote_ref | sed 's:refs/heads/::')
+
+  # Tentukan branch yang dilindungi
+  protected_branches=("main" "develop")
+
+  # Periksa apakah branch saat ini termasuk branch yang dilindungi
+  for protected_branch in "${protected_branches[@]}"; do
+    if [[ "$branch_name" == "$protected_branch" ]]; then
+      echo -e "\e[31mPush ke branch $branch_name tidak diizinkan.\e[0m"
+      echo -e "\e[33mSilakan buat branch baru dan ajukan pull request.\e[0m"
+      exit 1
+    fi
+  done
+done
+
+exit 0
